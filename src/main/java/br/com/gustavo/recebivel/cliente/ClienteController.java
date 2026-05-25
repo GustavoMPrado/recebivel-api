@@ -19,6 +19,11 @@ public class ClienteController {
         return clienteService.listar();
     }
 
+    @GetMapping("/{id}")
+    public Cliente buscarPorId(@PathVariable Long id) {
+        return clienteService.buscarPorId(id);
+    }
+
     @PostMapping
     public Cliente salvar(@RequestBody Cliente cliente){
         return clienteService.salvar(cliente);
