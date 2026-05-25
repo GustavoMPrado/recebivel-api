@@ -1,5 +1,6 @@
 package br.com.gustavo.recebivel.cliente;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,12 @@ public class ClienteController {
     }
 
     @PostMapping
-    public Cliente salvar(@RequestBody Cliente cliente){
+    public Cliente salvar(@RequestBody @Valid Cliente cliente){
         return clienteService.salvar(cliente);
     }
 
     @PutMapping("/{id}")
-    public Cliente atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public Cliente atualizar(@PathVariable Long id, @RequestBody @Valid Cliente cliente) {
         return clienteService.atualizar(id, cliente);
     }
 
