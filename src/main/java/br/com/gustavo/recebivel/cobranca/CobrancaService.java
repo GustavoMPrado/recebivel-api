@@ -82,8 +82,12 @@ public class CobrancaService {
     public Parcela registrarPagamento(Long parcelaId) {
         Parcela parcela = parcelaRepository.findById(parcelaId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Parcela nao encontrada"));
+        if (parcela.getStatus() == StatusParcela.PAGA) {
+            throw new IllegalStateException("Parcela ja esta paga");
+        }
 
         parcela.setStatus(StatusParcela.PAGA);
+
         parcela.setDataPagamento(LocalDate.now());
 
         Parcela parcelaSalva = parcelaRepository.save(parcela);

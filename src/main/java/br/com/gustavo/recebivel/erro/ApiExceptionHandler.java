@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ApiExceptionHandler {
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)
-    public ResponseEntity<String> tratarRecursoNaoEncontrado(RecursoNaoEncontradoException exception){
+    public ResponseEntity<String> tratarRecursoNaoEncontrado (RecursoNaoEncontradoException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> tratarRegraDeNegocio (IllegalStateException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }
