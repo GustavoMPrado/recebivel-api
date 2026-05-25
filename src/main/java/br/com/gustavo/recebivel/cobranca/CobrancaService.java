@@ -1,5 +1,7 @@
 package br.com.gustavo.recebivel.cobranca;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import br.com.gustavo.recebivel.cliente.Cliente;
 import br.com.gustavo.recebivel.cliente.ClienteService;
@@ -25,23 +27,40 @@ public class CobrancaService {
         return cobrancaRepository.findAll();
     }
 
-    public Cobranca salvar(Cobranca cobranca) {
-        Long clienteId = cobranca.getCliente().getId();
+    public Cobranca salvar(CriarCobrancaRequest request) {
+        Cliente cliente = clienteService.buscarPorId(request.getClienteId());
 
-        Cliente cliente = clienteService.buscarPorId(clienteId);
-
+        Cobranca cobranca = new Cobranca();
+        cobranca.setDescricao(request.getDescricao());
+        cobranca.setValorTotal(request.getValorTotal());
+        cobranca.setDataEmissao(request.getDataEmissao());
+        cobranca.setDataVencimento(request.getDataVencimento());
         cobranca.setCliente(cliente);
 
         Cobranca cobrancaSalva = cobrancaRepository.save(cobranca);
 
-        Parcela parcela = new Parcela();
-        parcela.setNumero(1);
-        parcela.setValor(cobrancaSalva.getValorTotal());
-        parcela.setDataVencimento(cobrancaSalva.getDataVencimento());
-        parcela.setStatus(StatusParcela.PENDENTE);
-        parcela.setCobranca(cobrancaSalva);
+        BigDecimal valorParcela = request.getValorTotal()
+                .divide(BigDecimal.valueOf(request.getQuantidadeParcelas()), 2, RoundingMode.HALF_UP);
 
-        parcelaRepository.save(parcela);
+        BigDecimal valorAcumulado = BigDecimal.ZERO;
+
+        for (int numero = 1; numero <= request.getQuantidadeParcelas(); numero++) {
+            Parcela parcela = new Parcela();
+            parcela.setNumero(numero);
+
+            if (numero == request.getQuantidadeParcelas()) {
+                parcela.setValor(request.getValorTotal().subtract(valorAcumulado));
+            } else {
+                parcela.setValor(valorParcela);
+                valorAcumulado = valorAcumulado.add(valorParcela);
+            }
+
+            parcela.setDataVencimento(request.getDataVencimento().plusMonths(numero - 1));
+            parcela.setStatus(StatusParcela.PENDENTE);
+            parcela.setCobranca(cobrancaSalva);
+
+            parcelaRepository.save(parcela);
+        }
 
         return cobrancaSalva;
     }

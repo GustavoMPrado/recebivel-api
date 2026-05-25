@@ -20,7 +20,7 @@ public class CobrancaController {
     }
 
     @PostMapping
-    public Cobranca salvar(@RequestBody Cobranca cobranca) {
-        return cobrancaService.salvar(cobranca);
+    public Cobranca salvar(@RequestBody CriarCobrancaRequest request) {
+        return cobrancaService.salvar(request);
     }
 }
