@@ -28,4 +28,9 @@ public class ClienteController {
     public Cliente salvar(@RequestBody Cliente cliente){
         return clienteService.salvar(cliente);
     }
+
+    @PutMapping("/{id}")
+    public Cliente atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
+        return clienteService.atualizar(id, cliente);
+    }
 }

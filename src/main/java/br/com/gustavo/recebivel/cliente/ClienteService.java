@@ -23,4 +23,19 @@ public class ClienteService {
     public Cliente salvar(Cliente cliente) {
         return clienteRepository.save(cliente);
     }
+
+    public Cliente atualizar(Long id, Cliente clienteAtualizado) {
+        Cliente cliente = buscarPorId(id);
+
+        if (cliente == null) {
+            return null;
+        }
+
+        cliente.setNome(clienteAtualizado.getNome());
+        cliente.setDocumento(clienteAtualizado.getDocumento());
+        cliente.setEmail(clienteAtualizado.getEmail());
+        cliente.setTelefone(clienteAtualizado.getTelefone());
+
+        return clienteRepository.save(cliente);
+    }
 }
