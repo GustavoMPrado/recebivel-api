@@ -1,5 +1,6 @@
 package br.com.gustavo.recebivel.cobranca;
 
+import java.time.LocalDate;
 import br.com.gustavo.recebivel.cliente.Cliente;
 import br.com.gustavo.recebivel.cliente.ClienteService;
 import br.com.gustavo.recebivel.erro.RecursoNaoEncontradoException;
@@ -76,5 +77,15 @@ public class CobrancaService {
         buscarPorId(cobrancaId);
 
         return parcelaRepository.findByCobrancaId(cobrancaId);
+    }
+
+    public Parcela registrarPagamento(Long parcelaId) {
+        Parcela parcela = parcelaRepository.findById(parcelaId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Parcela nao encontrada"));
+
+        parcela.setStatus(StatusParcela.PAGA);
+        parcela.setDataPagamento(LocalDate.now());
+
+        return parcelaRepository.save(parcela);
     }
 }
