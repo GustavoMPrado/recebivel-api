@@ -86,6 +86,30 @@ public class CobrancaService {
         parcela.setStatus(StatusParcela.PAGA);
         parcela.setDataPagamento(LocalDate.now());
 
-        return parcelaRepository.save(parcela);
+        Parcela parcelaSalva = parcelaRepository.save(parcela);
+
+        atualizarStatusCobranca(parcelaSalva.getCobranca());
+
+        return parcelaSalva;
+    }
+
+    private void atualizarStatusCobranca(Cobranca cobranca) {
+        List<Parcela> parcelas = parcelaRepository.findByCobrancaId(cobranca.getId());
+
+        boolean todasPagas = parcelas.stream()
+                .allMatch(parcela -> parcela.getStatus() == StatusParcela.PAGA);
+
+        boolean algumaPaga = parcelas.stream()
+                .anyMatch(parcela -> parcela.getStatus() == StatusParcela.PAGA);
+
+        if (todasPagas) {
+            cobranca.setStatus(StatusCobranca.PAGA);
+        } else if (algumaPaga) {
+            cobranca.setStatus(StatusCobranca.PARCIALMENTE_PAGA);
+        } else {
+            cobranca.setStatus(StatusCobranca.ABERTA);
+        }
+
+        cobrancaRepository.save(cobranca);
     }
 }
