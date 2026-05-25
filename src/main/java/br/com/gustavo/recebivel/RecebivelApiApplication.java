@@ -1,4 +1,4 @@
-package br.com.gustavo.recebivel_api;
+package br.com.gustavo.recebivel;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
