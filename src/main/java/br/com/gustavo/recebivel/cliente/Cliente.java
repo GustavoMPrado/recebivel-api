@@ -18,14 +18,14 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Nome é obrigatório")
+    @NotBlank(message = "Nome é obrigatório.")
     private String nome;
 
-    @NotBlank(message = "Documento é obrigatório")
-    @Size(max = 20, message = "Documento deve ter no máximo 20 caracteres")
+    @NotBlank(message = "Documento é obrigatório.")
+    @Size(max = 20, message = "Documento deve ter no máximo 20 caracteres.")
     private String documento;
 
-    @Email(message = "Email inválido")
+    @Email(message = "Email inválido.")
     private String email;
 
 

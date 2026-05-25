@@ -70,7 +70,7 @@ public class CobrancaService {
 
     public Cobranca buscarPorId(Long id) {
         return cobrancaRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Cobranca nao encontrada"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cobrança não encontrada."));
     }
 
     public List<Parcela> listarParcelas(Long cobrancaId) {
@@ -81,9 +81,9 @@ public class CobrancaService {
 
     public Parcela registrarPagamento(Long parcelaId) {
         Parcela parcela = parcelaRepository.findById(parcelaId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Parcela nao encontrada"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Parcela não encontrada."));
         if (parcela.getStatus() == StatusParcela.PAGA) {
-            throw new IllegalStateException("Parcela ja esta paga");
+            throw new IllegalStateException("Parcela já está paga.");
         }
 
         parcela.setStatus(StatusParcela.PAGA);

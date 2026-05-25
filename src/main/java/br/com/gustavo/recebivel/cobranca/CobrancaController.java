@@ -1,5 +1,7 @@
 package br.com.gustavo.recebivel.cobranca;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +37,7 @@ public class CobrancaController {
     }
 
     @PostMapping
-    public Cobranca salvar(@RequestBody CriarCobrancaRequest request) {
+    public Cobranca salvar(@RequestBody @Valid CriarCobrancaRequest request) {
         return cobrancaService.salvar(request);
     }
 }
