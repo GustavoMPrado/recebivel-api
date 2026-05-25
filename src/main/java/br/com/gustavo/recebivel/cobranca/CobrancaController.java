@@ -19,6 +19,11 @@ public class CobrancaController {
         return cobrancaService.listar();
     }
 
+    @GetMapping("/{id}")
+    public Cobranca buscarPorId(@PathVariable Long id) {
+        return cobrancaService.buscarPorId(id);
+    }
+
     @PostMapping
     public Cobranca salvar(@RequestBody CriarCobrancaRequest request) {
         return cobrancaService.salvar(request);

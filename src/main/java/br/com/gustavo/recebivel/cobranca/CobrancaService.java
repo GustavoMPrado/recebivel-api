@@ -1,13 +1,15 @@
 package br.com.gustavo.recebivel.cobranca;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import br.com.gustavo.recebivel.cliente.Cliente;
 import br.com.gustavo.recebivel.cliente.ClienteService;
+import br.com.gustavo.recebivel.erro.RecursoNaoEncontradoException;
+
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+
 
 @Service
 public class CobrancaService {
@@ -64,4 +66,10 @@ public class CobrancaService {
 
         return cobrancaSalva;
     }
+
+    public Cobranca buscarPorId(Long id) {
+        return cobrancaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cobranca nao encontrada"));
+    }
+
 }
