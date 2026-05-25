@@ -38,4 +38,16 @@ public class ClienteService {
 
         return clienteRepository.save(cliente);
     }
+
+    public Cliente desativar(Long id) {
+        Cliente cliente = buscarPorId(id);
+
+        if (cliente == null) {
+            return null;
+        }
+
+        cliente.setAtivo(false);
+
+        return clienteRepository.save(cliente);
+    }
 }

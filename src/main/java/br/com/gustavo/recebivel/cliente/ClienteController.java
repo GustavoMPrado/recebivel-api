@@ -33,4 +33,9 @@ public class ClienteController {
     public Cliente atualizar(@PathVariable Long id, @RequestBody Cliente cliente) {
         return clienteService.atualizar(id, cliente);
     }
+
+    @DeleteMapping("/{id}")
+    public Cliente desativar(@PathVariable Long id) {
+        return clienteService.desativar(id);
+    }
 }
