@@ -1,5 +1,7 @@
 package br.com.gustavo.recebivel.cliente;
 
+import br.com.gustavo.recebivel.erro.RecursoNaoEncontradoException;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +19,8 @@ public class ClienteService {
     }
 
     public Cliente buscarPorId(Long id) {
-        return clienteRepository.findById(id).orElse(null);
+        return clienteRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado"));
     }
 
     public Cliente salvar(Cliente cliente) {
@@ -26,10 +29,6 @@ public class ClienteService {
 
     public Cliente atualizar(Long id, Cliente clienteAtualizado) {
         Cliente cliente = buscarPorId(id);
-
-        if (cliente == null) {
-            return null;
-        }
 
         cliente.setNome(clienteAtualizado.getNome());
         cliente.setDocumento(clienteAtualizado.getDocumento());
@@ -41,10 +40,6 @@ public class ClienteService {
 
     public Cliente desativar(Long id) {
         Cliente cliente = buscarPorId(id);
-
-        if (cliente == null) {
-            return null;
-        }
 
         cliente.setAtivo(false);
 
