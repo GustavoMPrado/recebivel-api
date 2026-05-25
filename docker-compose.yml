@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: recebivel-postgres
+    environment:
+      POSTGRES_DB: recebivel
+      POSTGRES_USER: recebivel
+      POSTGRES_PASSWORD: recebivel
+    ports:
+      - "5432:5432"
+    volumes:
+      - recebivel-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  recebivel-postgres-data:
