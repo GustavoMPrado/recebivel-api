@@ -1,0 +1,8 @@
+CREATE TABLE cliente (
+    id BIGSERIAL PRIMARY KEY,
+    nome VARCHAR(120) NOT NULL,
+    documento VARCHAR(20) NOT NULL,
+    email VARCHAR(120),
+    telefone VARCHAR(20),
+    ativo BOOLEAN NOT NULL DEFAULT TRUE
+);
