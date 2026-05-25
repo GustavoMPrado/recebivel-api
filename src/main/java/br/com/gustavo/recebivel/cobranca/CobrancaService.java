@@ -72,4 +72,9 @@ public class CobrancaService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Cobranca nao encontrada"));
     }
 
+    public List<Parcela> listarParcelas(Long cobrancaId) {
+        buscarPorId(cobrancaId);
+
+        return parcelaRepository.findByCobrancaId(cobrancaId);
+    }
 }
