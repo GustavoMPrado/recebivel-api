@@ -1,5 +1,6 @@
 package br.com.gustavo.recebivel.cobranca;
 
+
 import br.com.gustavo.recebivel.cliente.Cliente;
 import br.com.gustavo.recebivel.cliente.ClienteService;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,13 @@ import java.util.List;
 public class CobrancaService {
 
     private final CobrancaRepository cobrancaRepository;
+    private final ParcelaRepository parcelaRepository;
     private final ClienteService clienteService;
 
-    public CobrancaService(CobrancaRepository cobrancaRepository, ClienteService clienteService) {
+    public CobrancaService(CobrancaRepository cobrancaRepository, ParcelaRepository parcelaRepository,
+                           ClienteService clienteService) {
         this.cobrancaRepository = cobrancaRepository;
+        this.parcelaRepository = parcelaRepository;
         this.clienteService = clienteService;
     }
 
@@ -28,6 +32,17 @@ public class CobrancaService {
 
         cobranca.setCliente(cliente);
 
-        return cobrancaRepository.save(cobranca);
+        Cobranca cobrancaSalva = cobrancaRepository.save(cobranca);
+
+        Parcela parcela = new Parcela();
+        parcela.setNumero(1);
+        parcela.setValor(cobrancaSalva.getValorTotal());
+        parcela.setDataVencimento(cobrancaSalva.getDataVencimento());
+        parcela.setStatus(StatusParcela.PENDENTE);
+        parcela.setCobranca(cobrancaSalva);
+
+        parcelaRepository.save(parcela);
+
+        return cobrancaSalva;
     }
 }
