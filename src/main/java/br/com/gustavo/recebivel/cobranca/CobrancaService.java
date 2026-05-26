@@ -137,4 +137,17 @@ public class CobrancaService {
 
         return cobrancaRepository.save(cobranca);
     }
+
+    public List<Parcela> marcarParcelasVencidas() {
+        List<Parcela> parcelas = parcelaRepository.findByStatusAndDataVencimentoBefore(
+                StatusParcela.PENDENTE,
+                LocalDate.now()
+        );
+
+        for (Parcela parcela : parcelas) {
+            parcela.setStatus(StatusParcela.VENCIDA);
+        }
+
+        return parcelaRepository.saveAll(parcelas);
+    }
 }

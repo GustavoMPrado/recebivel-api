@@ -45,4 +45,9 @@ public class CobrancaController {
     public Cobranca cancelar(@PathVariable Long id) {
         return cobrancaService.cancelar(id);
     }
+
+    @PutMapping("/parcelas/vencidas")
+    public List<Parcela> marcarParcelasVencidas() {
+        return cobrancaService.marcarParcelasVencidas();
+    }
 }
