@@ -31,13 +31,18 @@ public class CobrancaController {
         return cobrancaService.listarParcelas(id);
     }
 
+    @PostMapping
+    public Cobranca salvar(@RequestBody @Valid CriarCobrancaRequest request) {
+        return cobrancaService.salvar(request);
+    }
+
     @PutMapping("/parcelas/{id}/pagamento")
     public Parcela registrarPagamento(@PathVariable Long id) {
         return cobrancaService.registrarPagamento(id);
     }
 
-    @PostMapping
-    public Cobranca salvar(@RequestBody @Valid CriarCobrancaRequest request) {
-        return cobrancaService.salvar(request);
+    @PutMapping("/{id}/cancelamento")
+    public Cobranca cancelar(@PathVariable Long id) {
+        return cobrancaService.cancelar(id);
     }
 }

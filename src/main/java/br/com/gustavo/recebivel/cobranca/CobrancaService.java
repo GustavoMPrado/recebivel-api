@@ -116,4 +116,21 @@ public class CobrancaService {
 
         cobrancaRepository.save(cobranca);
     }
+
+    public Cobranca cancelar(Long id) {
+        Cobranca cobranca = buscarPorId(id);
+
+        cobranca.setStatus(StatusCobranca.CANCELADA);
+
+        List<Parcela> parcelas = parcelaRepository.findByCobrancaId(id);
+
+        for (Parcela parcela : parcelas) {
+            if (parcela.getStatus() == StatusParcela.PENDENTE) {
+                parcela.setStatus(StatusParcela.CANCELADA);
+                parcelaRepository.save(parcela);
+            }
+        }
+
+        return cobrancaRepository.save(cobranca);
+    }
 }
