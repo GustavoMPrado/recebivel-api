@@ -86,6 +86,10 @@ public class CobrancaService {
             throw new IllegalStateException("Parcela já está paga.");
         }
 
+        if (parcela.getStatus() == StatusParcela.CANCELADA) {
+            throw new IllegalStateException("Parcela cancelada não pode ser paga.");
+        }
+
         parcela.setStatus(StatusParcela.PAGA);
 
         parcela.setDataPagamento(LocalDate.now());
