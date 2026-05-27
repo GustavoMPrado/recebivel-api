@@ -3,7 +3,7 @@ package br.com.gustavo.recebivel.cobranca;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,37 +17,62 @@ public class CobrancaController {
     }
 
     @GetMapping
-    public List<Cobranca> listar() {
-        return cobrancaService.listar();
+    public List<CobrancaResponse> listar() {
+        List<Cobranca> cobrancas = cobrancaService.listar();
+        List<CobrancaResponse> resposta = new ArrayList<>();
+
+        for (Cobranca cobranca : cobrancas) {
+            resposta.add(new CobrancaResponse(cobranca));
+        }
+
+        return resposta;
     }
 
     @GetMapping("/{id}")
-    public Cobranca buscarPorId(@PathVariable Long id) {
-        return cobrancaService.buscarPorId(id);
+    public CobrancaResponse buscarPorId(@PathVariable Long id) {
+        Cobranca cobranca = cobrancaService.buscarPorId(id);
+        return new CobrancaResponse(cobranca);
     }
 
     @GetMapping("/{id}/parcelas")
-    public List<Parcela> listarParcelas(@PathVariable Long id) {
-        return cobrancaService.listarParcelas(id);
+    public List<ParcelaResponse> listarParcelas(@PathVariable Long id) {
+        List<Parcela> parcelas = cobrancaService.listarParcelas(id);
+        List<ParcelaResponse> resposta = new ArrayList<>();
+
+        for (Parcela parcela : parcelas) {
+            resposta.add(new ParcelaResponse(parcela));
+        }
+
+        return resposta;
     }
 
     @PostMapping
-    public Cobranca salvar(@RequestBody @Valid CriarCobrancaRequest request) {
-        return cobrancaService.salvar(request);
+    public CobrancaResponse salvar(@RequestBody @Valid CriarCobrancaRequest request) {
+        Cobranca cobranca = cobrancaService.salvar(request);
+        return new CobrancaResponse(cobranca);
     }
 
     @PutMapping("/parcelas/{id}/pagamento")
-    public Parcela registrarPagamento(@PathVariable Long id) {
-        return cobrancaService.registrarPagamento(id);
+    public ParcelaResponse registrarPagamento(@PathVariable Long id) {
+        Parcela parcela = cobrancaService.registrarPagamento(id);
+        return new ParcelaResponse(parcela);
     }
 
     @PutMapping("/{id}/cancelamento")
-    public Cobranca cancelar(@PathVariable Long id) {
-        return cobrancaService.cancelar(id);
+    public CobrancaResponse cancelar(@PathVariable Long id) {
+        Cobranca cobranca = cobrancaService.cancelar(id);
+        return new CobrancaResponse(cobranca);
     }
 
     @PutMapping("/parcelas/vencidas")
-    public List<Parcela> marcarParcelasVencidas() {
-        return cobrancaService.marcarParcelasVencidas();
+    public List<ParcelaResponse> marcarParcelasVencidas() {
+        List<Parcela> parcelas = cobrancaService.marcarParcelasVencidas();
+        List<ParcelaResponse> resposta = new ArrayList<>();
+
+        for (Parcela parcela : parcelas) {
+            resposta.add(new ParcelaResponse(parcela));
+        }
+
+        return resposta;
     }
 }

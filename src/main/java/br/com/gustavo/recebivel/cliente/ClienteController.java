@@ -3,6 +3,7 @@ package br.com.gustavo.recebivel.cliente;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,27 +17,38 @@ public class ClienteController {
     }
 
     @GetMapping
-    public List<Cliente> listar(){
-        return clienteService.listar();
+    public List<ClienteResponse> listar() {
+        List<Cliente> clientes = clienteService.listar();
+        List<ClienteResponse> resposta = new ArrayList<>();
+
+        for (Cliente cliente : clientes) {
+            resposta.add(new ClienteResponse(cliente));
+        }
+
+        return resposta;
     }
 
     @GetMapping("/{id}")
-    public Cliente buscarPorId(@PathVariable Long id) {
-        return clienteService.buscarPorId(id);
+    public ClienteResponse buscarPorId(@PathVariable Long id) {
+        Cliente cliente = clienteService.buscarPorId(id);
+        return new ClienteResponse(cliente);
     }
 
     @PostMapping
-    public Cliente salvar(@RequestBody @Valid Cliente cliente){
-        return clienteService.salvar(cliente);
+    public ClienteResponse salvar(@RequestBody @Valid Cliente cliente) {
+        Cliente clienteSalvo = clienteService.salvar(cliente);
+        return new ClienteResponse(clienteSalvo);
     }
 
     @PutMapping("/{id}")
-    public Cliente atualizar(@PathVariable Long id, @RequestBody @Valid Cliente cliente) {
-        return clienteService.atualizar(id, cliente);
+    public ClienteResponse atualizar(@PathVariable Long id, @RequestBody @Valid Cliente cliente) {
+        Cliente clienteAtualizado = clienteService.atualizar(id, cliente);
+        return new ClienteResponse(clienteAtualizado);
     }
 
     @DeleteMapping("/{id}")
-    public Cliente desativar(@PathVariable Long id) {
-        return clienteService.desativar(id);
+    public ClienteResponse desativar(@PathVariable Long id) {
+        Cliente clienteDesativado = clienteService.desativar(id);
+        return new ClienteResponse(clienteDesativado);
     }
 }
