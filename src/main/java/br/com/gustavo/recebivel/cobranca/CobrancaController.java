@@ -28,6 +28,30 @@ public class CobrancaController {
         return resposta;
     }
 
+    @GetMapping("/status/{status}")
+    public List<CobrancaResponse> listarPorStatus(@PathVariable StatusCobranca status) {
+        List<Cobranca> cobrancas = cobrancaService.listarPorStatus(status);
+        List<CobrancaResponse> resposta = new ArrayList<>();
+
+        for (Cobranca cobranca : cobrancas) {
+            resposta.add(new CobrancaResponse(cobranca));
+        }
+
+        return resposta;
+    }
+
+    @GetMapping("/cliente/{clienteId}")
+    public List<CobrancaResponse> listarPorCliente(@PathVariable Long clienteId) {
+        List<Cobranca> cobrancas = cobrancaService.listarPorCliente(clienteId);
+        List<CobrancaResponse> resposta = new ArrayList<>();
+
+        for (Cobranca cobranca : cobrancas) {
+            resposta.add(new CobrancaResponse(cobranca));
+        }
+
+        return resposta;
+    }
+
     @GetMapping("/{id}")
     public CobrancaResponse buscarPorId(@PathVariable Long id) {
         Cobranca cobranca = cobrancaService.buscarPorId(id);

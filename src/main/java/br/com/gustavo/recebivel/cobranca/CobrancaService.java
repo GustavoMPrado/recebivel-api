@@ -26,6 +26,16 @@ public class CobrancaService {
         this.clienteService = clienteService;
     }
 
+    public List<Cobranca> listarPorStatus(StatusCobranca status) {
+        return cobrancaRepository.findByStatus(status);
+    }
+
+    public List<Cobranca> listarPorCliente(Long clienteId) {
+        clienteService.buscarPorId(clienteId);
+
+        return cobrancaRepository.findByClienteId(clienteId);
+    }
+
     public List<Cobranca> listar() {
         return cobrancaRepository.findAll();
     }
