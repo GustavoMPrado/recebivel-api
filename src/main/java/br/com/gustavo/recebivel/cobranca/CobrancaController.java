@@ -52,6 +52,18 @@ public class CobrancaController {
         return resposta;
     }
 
+    @GetMapping("/em-aberto")
+    public List<CobrancaResponse> listarCobrancasEmAberto() {
+        List<Cobranca> cobrancas = cobrancaService.listarCobrancasEmAberto();
+        List<CobrancaResponse> resposta = new ArrayList<>();
+
+        for (Cobranca cobranca : cobrancas) {
+            resposta.add(new CobrancaResponse(cobranca));
+        }
+
+        return resposta;
+    }
+
     @GetMapping("/{id}")
     public CobrancaResponse buscarPorId(@PathVariable Long id) {
         Cobranca cobranca = cobrancaService.buscarPorId(id);
@@ -68,6 +80,49 @@ public class CobrancaController {
         }
 
         return resposta;
+    }
+
+    @GetMapping("/parcelas/status/{status}")
+    public List<ParcelaResponse> listarParcelasPorStatus(@PathVariable StatusParcela status) {
+        List<Parcela> parcelas = cobrancaService.listarParcelasPorStatus(status);
+        List<ParcelaResponse> resposta = new ArrayList<>();
+
+        for (Parcela parcela : parcelas) {
+            resposta.add(new ParcelaResponse(parcela));
+        }
+
+        return resposta;
+    }
+
+    @GetMapping("/parcelas/em-aberto")
+    public List<ParcelaResponse> listarParcelasEmAberto() {
+        List<Parcela> parcelas = cobrancaService.listarParcelasEmAberto();
+        List<ParcelaResponse> resposta = new ArrayList<>();
+
+        for (Parcela parcela : parcelas) {
+            resposta.add(new ParcelaResponse(parcela));
+        }
+
+        return resposta;
+    }
+
+    @GetMapping("/parcelas/vencidas")
+    public List<ParcelaResponse> listarParcelasVencidas() {
+        List<Parcela> parcelas = cobrancaService.listarParcelasVencidas();
+        List<ParcelaResponse> resposta = new ArrayList<>();
+
+        for (Parcela parcela : parcelas) {
+            resposta.add(new ParcelaResponse(parcela));
+        }
+
+        return resposta;
+    }
+
+    @GetMapping("/parcelas/{id}")
+    public ParcelaResponse buscarParcelaPorId(@PathVariable Long id) {
+        Parcela parcela = cobrancaService.buscarParcelaPorId(id);
+
+        return new ParcelaResponse(parcela);
     }
 
     @PostMapping

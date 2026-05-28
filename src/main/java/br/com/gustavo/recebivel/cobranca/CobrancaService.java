@@ -36,6 +36,15 @@ public class CobrancaService {
         return cobrancaRepository.findByClienteId(clienteId);
     }
 
+    public List<Cobranca> listarCobrancasEmAberto() {
+        List<StatusCobranca> statusEmAberto = List.of(
+                StatusCobranca.ABERTA,
+                StatusCobranca.PARCIALMENTE_PAGA
+        );
+
+        return cobrancaRepository.findByStatusIn(statusEmAberto);
+    }
+
     public List<Cobranca> listar() {
         return cobrancaRepository.findAll();
     }
@@ -87,6 +96,28 @@ public class CobrancaService {
         buscarPorId(cobrancaId);
 
         return parcelaRepository.findByCobrancaId(cobrancaId);
+    }
+
+    public List<Parcela> listarParcelasPorStatus(StatusParcela status) {
+        return parcelaRepository.findByStatus(status);
+    }
+
+    public List<Parcela> listarParcelasEmAberto() {
+        List<StatusParcela> statusEmAberto = List.of(
+                StatusParcela.PENDENTE,
+                StatusParcela.VENCIDA
+        );
+
+        return parcelaRepository.findByStatusIn(statusEmAberto);
+    }
+
+    public List<Parcela> listarParcelasVencidas() {
+        return parcelaRepository.findByStatus(StatusParcela.VENCIDA);
+    }
+
+    public Parcela buscarParcelaPorId(Long id) {
+        return parcelaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Parcela não encontrada."));
     }
 
     public Parcela registrarPagamento(Long parcelaId) {

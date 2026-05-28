@@ -9,4 +9,6 @@ public interface CobrancaRepository extends JpaRepository<Cobranca, Long> {
     List<Cobranca> findByStatus(StatusCobranca status);
 
     List<Cobranca> findByClienteId(Long clienteId);
+
+    List<Cobranca> findByStatusIn(List<StatusCobranca> status);
 }
