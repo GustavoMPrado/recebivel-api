@@ -11,5 +11,20 @@ services:
     volumes:
       - recebivel-postgres-data:/var/lib/postgresql/data
 
+  api:
+    image: recebivel-api:latest
+    container_name: recebivel-api
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/recebivel
+      DATABASE_USERNAME: recebivel
+      DATABASE_PASSWORD: recebivel
+      JWT_SECRET: recebivel-api-chave-secreta-local-para-desenvolvimento
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
 volumes:
   recebivel-postgres-data:
