@@ -8,11 +8,27 @@ A minha ideia inicial era criar uma aplicação que proporcionasse algum tipo de
 
 Como este projeto não foi desenvolvido dentro de uma empresa real, eu procurei simular um cenário comum em pequenos negócios: o controle de recebíveis e o acompanhamento de inadimplência.
 
-A partir disso, confeccionei uma API simples, mas completa o suficiente para representar um fluxo realista de recebíveis, com clientes, cobranças, parcelas, vencimentos, pagamentos, cancelamentos, autenticação, banco de dados, Docker e testes automatizados.
+A partir disso, desenvolvi uma API simples, mas completa o suficiente para representar um fluxo realista de recebíveis, com clientes, cobranças, parcelas, vencimentos, pagamentos, cancelamentos, autenticação, banco de dados, Docker, Swagger, deploy e testes automatizados.
 
 O projeto foi criado com o objetivo de simular uma necessidade comum de pequenas empresas: acompanhar o que ainda precisa ser recebido, quais cobranças estão em aberto, quais parcelas venceram e quais pagamentos já foram registrados.
 
 Não funciona como um sistema de pagamento. Não processa Pix, boleto, cartão ou checkout. O foco é controle interno: acompanhar o que ainda precisa ser recebido, quais cobranças estão em aberto, quais parcelas venceram e quais pagamentos já foram registrados.
+
+## Projeto online
+
+API publicada no Render:
+
+```text
+https://recebivel-api.onrender.com
+```
+
+Swagger online:
+
+```text
+https://recebivel-api.onrender.com/swagger-ui/index.html
+```
+
+Observação: por estar hospedado em plano gratuito no Render, o serviço pode demorar alguns segundos para responder após um período de inatividade.
 
 ## O que o projeto tem hoje
 
@@ -20,11 +36,13 @@ Não funciona como um sistema de pagamento. Não processa Pix, boleto, cartão o
 * Autenticação com login e token JWT
 * Endpoints protegidos com Spring Security
 * PostgreSQL com migrations usando Flyway
+* Banco PostgreSQL em nuvem no Neon
+* Deploy da API no Render
 * Dockerfile da aplicação
 * Docker Compose com API + banco
 * Profiles separados para desenvolvimento e produção
-* Swagger habilitado no ambiente de desenvolvimento
-* Swagger desativado no ambiente de produção
+* Swagger habilitado em desenvolvimento e produção
+* Botão Authorize no Swagger para uso do token JWT
 * Tratamento de erros em JSON
 * Testes automatizados para regras principais
 
@@ -45,11 +63,13 @@ Não funciona como um sistema de pagamento. Não processa Pix, boleto, cartão o
 * Swagger/OpenAPI
 * JUnit
 * Mockito
+* Render
+* Neon
 
 ## Números do projeto
 
 * 4 tabelas principais: cliente, cobrança, parcela e usuário
-* 4 migrations com Flyway
+* 5 migrations com Flyway
 * 20 endpoints REST
 * 4 status de cobrança
 * 4 status de parcela
@@ -58,13 +78,16 @@ Não funciona como um sistema de pagamento. Não processa Pix, boleto, cartão o
 * 15+ testes automatizados cobrindo serviços, autenticação e regras de negócio
 
 ## Melhorias de eficiência e manutenibilidade
+
 * Docker Compose para subir API e PostgreSQL juntos, reduzindo a configuração manual do ambiente.
-* Flyway para versionar o banco de dados e evitar criação manual de tabelas. 
+* Flyway para versionar o banco de dados e evitar criação manual de tabelas.
 * DTOs de resposta para evitar retorno de objetos grandes e relacionamentos aninhados desnecessários.
-* Tratamento padronizado de erros em JSON, facilitando o consumo da API
+* Tratamento padronizado de erros em JSON, facilitando o consumo da API.
 * Profiles separados para desenvolvimento e produção, reduzindo riscos de configuração incorreta.
+* Variáveis de ambiente para dados sensíveis em produção.
 * Testes automatizados para validar regras importantes sem depender apenas de testes manuais.
-* Swagger habilitado em desenvolvimento e desativado em produção.
+* Swagger disponível para visualizar e testar os endpoints da API.
+* Deploy em nuvem com Render e Neon.
 
 ## Funcionalidades
 
@@ -103,6 +126,7 @@ Não funciona como um sistema de pagamento. Não processa Pix, boleto, cartão o
 * Geração de token JWT
 * Proteção dos endpoints internos
 * Retorno padronizado para acesso não autorizado
+* Autorização via Bearer Token no Swagger
 
 ## Algumas regras implementadas
 
@@ -114,11 +138,14 @@ Não funciona como um sistema de pagamento. Não processa Pix, boleto, cartão o
 * Parcela paga não pode ser paga de novo.
 * Parcela cancelada não pode ser paga.
 * Ao pagar uma parcela, a data de pagamento é preenchida.
+* Ao pagar uma parcela, o status da parcela muda para PAGA.
 * Ao pagar parte das parcelas, a cobrança fica parcialmente paga.
 * Ao pagar todas as parcelas, a cobrança fica paga.
 * Ao cancelar uma cobrança, parcelas pendentes são canceladas.
 * Parcelas pagas não são alteradas no cancelamento.
 * Parcelas vencidas são marcadas a partir da data de vencimento.
+* Cobranças em aberto são cobranças com status ABERTA ou PARCIALMENTE_PAGA.
+* Parcelas em aberto são parcelas com status PENDENTE ou VENCIDA.
 
 ## Status de cobrança
 
@@ -166,13 +193,39 @@ A API estará disponível em:
 http://localhost:8080
 ```
 
+## Como rodar localmente pelo Maven
+
+Pré-requisitos:
+
+* Java 21
+* Docker Desktop aberto
+* PostgreSQL local subindo pelo Docker Compose
+
+Suba o banco:
+
+```bash
+docker compose up -d postgres
+```
+
+No Windows PowerShell, rode a aplicação:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+A API estará disponível em:
+
+```text
+http://localhost:8080
+```
+
 ## Login
 
-A migration cria um usuário inicial para teste local:
+A migration cria um usuário inicial para teste:
 
 ```text
 email: admin@recebivel.com
-senha: 123456
+senha: Recebivel@2026
 ```
 
 Endpoint:
@@ -186,7 +239,7 @@ Exemplo de requisição:
 ```json
 {
   "email": "admin@recebivel.com",
-  "senha": "123456"
+  "senha": "Recebivel@2026"
 }
 ```
 
@@ -198,7 +251,7 @@ Exemplo de resposta:
 }
 ```
 
-Para acessar endpoints protegidos:
+Para acessar endpoints protegidos via HTTP:
 
 ```http
 Authorization: Bearer token_jwt
@@ -206,13 +259,45 @@ Authorization: Bearer token_jwt
 
 ## Swagger
 
-No profile de desenvolvimento, o Swagger fica disponível em:
+Swagger local:
 
 ```text
 http://localhost:8080/swagger-ui/index.html
 ```
 
-No profile de produção utilizado pelo Docker, o Swagger permanece desativado.
+Swagger online:
+
+```text
+https://recebivel-api.onrender.com/swagger-ui/index.html
+```
+
+Para testar endpoints protegidos pelo Swagger:
+
+1. Acesse o endpoint `POST /usuarios/login`.
+2. Informe o email e a senha de demonstração.
+3. Copie o token retornado.
+4. Clique no botão `Authorize`.
+5. Cole somente o token, sem aspas e sem a palavra `Bearer`.
+6. Clique em `Authorize`.
+7. Execute os endpoints protegidos normalmente.
+
+Exemplo correto no Swagger:
+
+```text
+eyJhbGciOiJIUzUxMiJ9...
+```
+
+Não usar:
+
+```text
+"eyJhbGciOiJIUzUxMiJ9..."
+```
+
+Nem:
+
+```text
+Bearer eyJhbGciOiJIUzUxMiJ9...
+```
 
 ## Endpoints principais
 
@@ -300,17 +385,52 @@ No Windows PowerShell:
 
 O projeto usa PostgreSQL com Flyway.
 
-As migrations criam e versionam a estrutura do banco, colocando as tabelas de clientes, cobranças, parcelas e usuários.
+As migrations criam e versionam a estrutura do banco, incluindo as tabelas de clientes, cobranças, parcelas e usuários.
+
+Em produção, o banco utilizado está hospedado no Neon.
 
 ## Perfis
 
 O projeto tem dois profiles principais:
 
 * `dev`: usado para desenvolvimento local
-* `prod`: usado para execução em container com variáveis de ambiente
+* `prod`: usado no deploy em produção com variáveis de ambiente
+
+O profile de produção usa variáveis como:
+
+```text
+DATABASE_URL
+DATABASE_USERNAME
+DATABASE_PASSWORD
+JWT_SECRET
+JWT_EXPIRATION
+```
+
+Essas variáveis não ficam salvas no repositório.
+
+## Deploy
+
+O projeto está publicado com:
+
+* Render para hospedagem da API
+* Neon para hospedagem do PostgreSQL
+
+API online:
+
+```text
+https://recebivel-api.onrender.com
+```
+
+Swagger online:
+
+```text
+https://recebivel-api.onrender.com/swagger-ui/index.html
+```
 
 ## Sobre o projeto
 
 Este projeto faz parte do meu portfólio backend.
 
-A ideia foi confeccionar uma API simples, mas completa o suficiente para que eu pudesse praticar pontos considerados fundamentais do desenvolvimento Java com Spring Boot: criação de endpoints REST, persistência com banco relacional, migrations, autenticação, validações, tratamento de erros, Docker e testes automatizados.
+A ideia foi desenvolver uma API simples, mas completa o suficiente para praticar pontos fundamentais do desenvolvimento Java com Spring Boot: criação de endpoints REST, persistência com banco relacional, migrations, autenticação, validações, tratamento de erros, Docker, Swagger, deploy e testes automatizados.
+
+O projeto foi mantido como um monólito modular, organizado por pacotes de domínio, sem microsserviços, porque o escopo atual não exige uma arquitetura distribuída.
